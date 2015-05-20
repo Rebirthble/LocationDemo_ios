@@ -53,28 +53,36 @@
     UILocalNotification *localNotif = [[UILocalNotification alloc] init];
     if (localNotif == nil)
         return;
-
+    localNotif.alertBody = [NSString stringWithFormat:@"近くでセール開催中！"];
+    localNotif.soundName = UILocalNotificationDefaultSoundName;
+    localNotif.applicationIconBadgeNumber = 1;
+    
     if (geoPoint){
+        CLCircularRegion *region = nil;
         CLLocationCoordinate2D location = CLLocationCoordinate2DMake(geoPoint.latitude, geoPoint.longitude);
         if (CLLocationCoordinate2DIsValid(location)){
-            CLCircularRegion *region = [[CLCircularRegion alloc] initWithCenter:location
+            region = [[CLCircularRegion alloc] initWithCenter:location
                                                                          radius:500.0
                                                                      identifier:@"salePoint"];
             region.notifyOnExit = NO;
-            localNotif.region = region;
-            localNotif.regionTriggersOnce = YES;
+            CLLocation *current = [self.mLocationManager location];
+            if([region containsCoordinate:CLLocationCoordinate2DMake(current.coordinate.latitude, current.coordinate.longitude)]){
+                NSLog(@"presentedNotification");
+                [[UIApplication sharedApplication] presentLocalNotificationNow:localNotif];
+            } else {
+                NSLog(@"scheduledNotification");
+                localNotif.region = region;
+                localNotif.regionTriggersOnce = YES;
+                [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+            }
         } else {
             //TODO:エラー処理
             NSLog(@"geoPoint is null");
         }
         
     }
-    localNotif.alertBody = [NSString stringWithFormat:@"近くでセール開催中！"];
-    //localNotif.alertAction = NSLocalizedString(@"View Details", nil);
-    localNotif.soundName = UILocalNotificationDefaultSoundName;
-    localNotif.applicationIconBadgeNumber = 1;
-    //[[UIApplication sharedApplication] presentLocalNotificationNow:localNotif];
-    [[UIApplication sharedApplication] scheduleLocalNotification:localNotif];
+    
+    
 }
 
 @end
