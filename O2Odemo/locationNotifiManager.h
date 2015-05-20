@@ -13,8 +13,8 @@
 
 @interface locationNotifiManager : NSObject<CLLocationManagerDelegate>
 
-- (void)searchLocations:(NSString*)locationId;
+- (void)searchLocations:(NSString*)locationId error:(NSError**)error;
 
-- (void)updateLocation:(NCMBGeoPoint*)geoPoint;
+- (void)updateLocation:(NCMBGeoPoint*)geoPoint error:(NSError**)error;
 
 @end
