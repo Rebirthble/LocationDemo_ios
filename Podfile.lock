@@ -1,12 +1,8 @@
 PODS:
   - NCMB (2.1.0)
-  - Realm (0.92.3):
-    - Realm/Headers (= 0.92.3)
-  - Realm/Headers (0.92.3)
 
 DEPENDENCIES:
   - NCMB (from `https://github.com/NIFTYCloud-mbaas/ncmb_ios.git`)
-  - Realm
 
 EXTERNAL SOURCES:
   NCMB:
@@ -19,6 +15,5 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   NCMB: 8ffbe012c93d62b470645dbdf3ba50033679ebb7
-  Realm: bf604805d5e897850da488260f93889f510924b3
 
-COCOAPODS: 0.36.3
+COCOAPODS: 0.37.1

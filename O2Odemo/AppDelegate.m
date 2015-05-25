@@ -17,6 +17,8 @@
 
 @end
 
+static locationNotifiManager *manager = nil;
+
 @implementation AppDelegate
 
 
@@ -36,6 +38,9 @@
     UIUserNotificationSettings *mySettings =
     [UIUserNotificationSettings settingsForTypes:types categories:nil];
     [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
+    [[UIApplication sharedApplication] registerForRemoteNotifications];
+    
+    manager = [[locationNotifiManager alloc] init];
     
     return YES;
 }
@@ -43,6 +48,45 @@
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification{
     NSLog(@"localNotification received.");
 }
+
+-(void)application:(UIApplication *)application
+    didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+    NCMBInstallation *installation = [NCMBInstallation currentInstallation];
+    [installation setDeviceTokenFromData:deviceToken];
+    [installation saveInBackgroundWithBlock:^(NSError *error) {
+        if(!error){
+            //端末情報の登録が成功した場合の処理
+            NSLog(@"device is registed.");
+        } else {
+            //端末情報の登録が失敗した場合の処理
+            NSLog(@"error:%@", error);
+        }
+    }];
+}
+
+- (void)application:(UIApplication *)application
+    didReceiveRemoteNotification:(NSDictionary *)userInfo
+    fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+    NSLog(@"Received notification:%@", userInfo);
+    
+    //ペイロードからセール店舗のIDを取得
+    NSString *locationId = nil;
+    locationId = [userInfo objectForKey:@"locationId"];
+    
+    if (locationId){
+        //Locaton Notificationの設定
+        [manager searchLocations:locationId block:^(NSError *error) {
+            if (error){
+                NSLog(@"error:%@",error);
+            }
+            completionHandler(UIBackgroundFetchResultNewData);
+        }];
+    }
+    
+}
+
 
 - (void)applicationWillResignActive:(UIApplication *)application {
 

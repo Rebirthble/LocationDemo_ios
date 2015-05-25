@@ -31,12 +31,12 @@ static locationNotifiManager *manager = nil;
 }
 
 - (IBAction)updateLocationTest:(id)sender {
+    [manager searchLocations:@"dyn791WWeuD7Nrif" block:^(NSError *error) {
+        if (error){
+            NSLog(@"error:%@",error);
+        }
+    }];
     
-    NSError *error = nil;
-    [manager searchLocations:@"dyn791WWeuD7Nrif" error:&error];
-    if (error){
-        NSLog(@"error:%@",error);
-    }
 }
 
 
